@@ -1,0 +1,36 @@
+import kotlin.Boolean;
+
+CREATE TABLE IF NOT  EXISTS SensorData (
+    id_ INTEGER PRIMARY KEY AUTOINCREMENT,
+    roll_IMU1 REAL,
+    pitch_IMU1 REAL,
+    roll_IMU2 REAL,
+    pitch_IMU2 REAL,
+    rs775_speed REAL,
+    spg_speed REAL,
+    rs775_motor_voltage REAL,
+    rs775_current REAL,
+    spg_voltage REAL,
+    spg_current REAL,
+    date TEXT,
+    time TEXT
+);
+
+insertSensorData:
+INSERT INTO SensorData (
+    roll_IMU1, pitch_IMU1, roll_IMU2, pitch_IMU2,
+    rs775_speed, spg_speed, rs775_motor_voltage,
+    rs775_current, spg_voltage, spg_current,date,time
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);
+
+selectAllSensorData:
+SELECT  *
+FROM SensorData;
+
+selectSensorDataById:
+SELECT id_,roll_IMU1, pitch_IMU1, roll_IMU2, pitch_IMU2, rs775_speed, spg_speed, rs775_motor_voltage, rs775_current, spg_voltage, spg_current FROM SensorData WHERE id_= ? ;
+
+selectAllSensorDataOrderedBySpeed:
+SELECT id_,roll_IMU1, pitch_IMU1, roll_IMU2, pitch_IMU2, rs775_speed, spg_speed, rs775_motor_voltage, rs775_current, spg_voltage, spg_current FROM SensorData ORDER BY rs775_speed DESC;
+clearSensorData:
+DELETE FROM SensorData;
