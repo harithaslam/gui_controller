@@ -12,8 +12,14 @@ data class ArduinoSensorData(
      val spg_speed: Double?,
     val rs775_motor_voltage: Double?,
      val rs775_current: Double?,
+     val rs775_position: Double?,
     val spg_voltage: Double?,
     val spg_current: Double?,
+     val spg_position : Double?,
+     val brake_status : Int?,
+     val PID_proportional:Double?,
+     val PID_integral:Double?,
+     val PID_derivative:Double?,
      @kotlinx.serialization.Transient
      var date: String? = null,
      @kotlinx.serialization.Transient

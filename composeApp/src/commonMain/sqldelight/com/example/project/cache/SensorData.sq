@@ -1,6 +1,6 @@
 import kotlin.Boolean;
 
-CREATE TABLE IF NOT  EXISTS SensorData (
+CREATE TABLE IF NOT EXISTS SensorData (
     id_ INTEGER PRIMARY KEY AUTOINCREMENT,
     roll_IMU1 REAL,
     pitch_IMU1 REAL,
@@ -10,8 +10,14 @@ CREATE TABLE IF NOT  EXISTS SensorData (
     spg_speed REAL,
     rs775_motor_voltage REAL,
     rs775_current REAL,
+    rs775_position REAL,
     spg_voltage REAL,
     spg_current REAL,
+    spg_position REAL,
+    brake_status INTEGER,
+    PID_proportional REAL,
+    PID_integral REAL,
+    PID_derivative REAL,
     date TEXT,
     time TEXT
 );
@@ -20,8 +26,11 @@ insertSensorData:
 INSERT INTO SensorData (
     roll_IMU1, pitch_IMU1, roll_IMU2, pitch_IMU2,
     rs775_speed, spg_speed, rs775_motor_voltage,
-    rs775_current, spg_voltage, spg_current,date,time
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);
+    rs775_current, rs775_position, spg_voltage,
+    spg_current, spg_position, brake_status,
+    PID_proportional, PID_integral, PID_derivative,
+    date, time
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllSensorData:
 SELECT  *
