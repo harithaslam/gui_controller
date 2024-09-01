@@ -157,46 +157,42 @@ class SerialViewModel(
                         val data = handleReceivedData(completeLine.trim())
                         // Post the complete line to LiveData
                         _serialData.value = """
-    Roll IMU1: ${data.roll_IMU1}
-    Pitch IMU1: ${data.pitch_IMU1}
-    Roll IMU2: ${data.roll_IMU2}
-    Pitch IMU2: ${data.pitch_IMU2}
-    RS775 Speed: ${data.rs775_speed}
-    SPG Speed: ${data.spg_speed}
-    RS775 Motor Voltage: ${data.rs775_motor_voltage}
-    RS775 Current: ${data.rs775_current}
-    RS775 Position: ${data.rs775_position}
-    SPG Voltage: ${data.spg_voltage}
-    SPG Current: ${data.spg_current}
-    SPG Position: ${data.spg_position}
-    Brake Status: ${data.brake_status}
-    PID Proportional: ${data.PID_proportional}
-    PID Integral: ${data.PID_integral}
-    PID Derivative: ${data.PID_derivative}
-    Date: ${data.date}
-    Time: ${data.time}
-""".trimIndent()
+                                    Roll IMU1: ${data.roll_IMU1}
+                                    Pitch IMU1: ${data.pitch_IMU1}
+                                    Roll IMU2: ${data.roll_IMU2}
+                                    Pitch IMU2: ${data.pitch_IMU2}
+                                    RS775 Speed: ${data.rs775_speed}
+                                    SPG Speed: ${data.spg_speed}
+                                    RS775 Motor Voltage: ${data.rs775_motor_voltage}
+                                    RS775 Current: ${data.rs775_current}
+                                    RS775 Position: ${data.rs775_position}
+                                    SPG Voltage: ${data.spg_voltage}
+                                    SPG Current: ${data.spg_current}
+                                    SPG Position: ${data.spg_position}
+                                    Brake Status: ${data.brake_status}
+                                    PID Proportional: ${data.PID_proportional}
+                                    PID Integral: ${data.PID_integral}
+                                    PID Derivative: ${data.PID_derivative}
+                                """.trimIndent()
 
                         println(
                             """
-    Roll IMU1: ${data.roll_IMU1}
-    Pitch IMU1: ${data.pitch_IMU1}
-    Roll IMU2: ${data.roll_IMU2}
-    Pitch IMU2: ${data.pitch_IMU2}
-    RS775 Speed: ${data.rs775_speed}
-    SPG Speed: ${data.spg_speed}
-    RS775 Motor Voltage: ${data.rs775_motor_voltage}
-    RS775 Current: ${data.rs775_current}
-    RS775 Position: ${data.rs775_position}
-    SPG Voltage: ${data.spg_voltage}
-    SPG Current: ${data.spg_current}
-    SPG Position: ${data.spg_position}
-    Brake Status: ${data.brake_status}
-    PID Proportional: ${data.PID_proportional}
-    PID Integral: ${data.PID_integral}
-    PID Derivative: ${data.PID_derivative}
-    Date: ${data.date}
-    Time: ${data.time}
+                        Roll IMU1: ${data.roll_IMU1}
+                        Pitch IMU1: ${data.pitch_IMU1}
+                        Roll IMU2: ${data.roll_IMU2}
+                        Pitch IMU2: ${data.pitch_IMU2}
+                        RS775 Speed: ${data.rs775_speed}
+                        SPG Speed: ${data.spg_speed}
+                        RS775 Motor Voltage: ${data.rs775_motor_voltage}
+                        RS775 Current: ${data.rs775_current}
+                        RS775 Position: ${data.rs775_position}
+                        SPG Voltage: ${data.spg_voltage}
+                        SPG Current: ${data.spg_current}
+                        SPG Position: ${data.spg_position}
+                        Brake Status: ${data.brake_status}
+                        PID Proportional: ${data.PID_proportional}
+                        PID Integral: ${data.PID_integral}
+                        PID Derivative: ${data.PID_derivative}
     """.trimIndent()
                         )
 
@@ -229,8 +225,14 @@ class SerialViewModel(
                     spg_speed = arduinoSensorData.spg_speed,
                     rs775_motor_voltage = arduinoSensorData.rs775_motor_voltage,
                     rs775_current = arduinoSensorData.rs775_current,
+                    rs775_position = arduinoSensorData.rs775_position,
                     spg_current = arduinoSensorData.spg_current,
                     spg_voltage = arduinoSensorData.spg_voltage,
+                    spg_position = arduinoSensorData.spg_position,
+                    brake_status = arduinoSensorData.brake_status,
+                    PID_proportional = arduinoSensorData.PID_proportional,
+                    PID_integral = arduinoSensorData.PID_integral,
+                    PID_derivative = arduinoSensorData.PID_derivative,
                     date = MalaysianTimeFormatter.getDateForFile(),
                     time = MalaysianTimeFormatter.getTimeForFile()
                 )
@@ -256,8 +258,6 @@ class SerialViewModel(
             PID_proportional = 0.0,
             PID_integral = 0.0,
             PID_derivative = 0.0,
-            date = null,
-            time = null
         )
     }
 
