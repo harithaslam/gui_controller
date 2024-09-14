@@ -1,6 +1,5 @@
 package org.example.project
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -9,9 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -20,7 +19,6 @@ import androidx.compose.material.ExposedDropdownMenuDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -37,6 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import org.example.project.viewmodels.SerialViewModel
 import org.koin.mp.KoinPlatform.getKoin
 
 
@@ -46,6 +45,8 @@ fun App(viewModel: SerialViewModel =viewModel { SerialViewModel(sensorDataQuerie
     val serialData by viewModel.serialData.collectAsState()
     val snackbarHostState by viewModel.SnackbarHostState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
+
     AppTheme {
         Scaffold(
             snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -94,6 +95,7 @@ fun App(viewModel: SerialViewModel =viewModel { SerialViewModel(sensorDataQuerie
                     modifier = Modifier.padding(10.dp).weight(0.5f)
 
                 ) {
+
                     Card(
                         elevation = 3.dp,
                         modifier = Modifier.fillMaxWidth()
@@ -106,6 +108,14 @@ fun App(viewModel: SerialViewModel =viewModel { SerialViewModel(sensorDataQuerie
 
                         }
                     }
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Card (elevation = 4.dp){
+                        AnalyticsView()
+
+                    }
+
+
+
                 }
             }
         }

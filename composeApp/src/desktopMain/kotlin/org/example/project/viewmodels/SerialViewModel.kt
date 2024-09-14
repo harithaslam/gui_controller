@@ -1,7 +1,6 @@
-package org.example.project
+package org.example.project.viewmodels
 
 import MalaysianTimeFormatter
-import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.lifecycle.ViewModel
@@ -17,11 +16,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
+import org.example.project.ArduinoSensorData
+import org.example.project.DataProcess
 import java.awt.Desktop
 import java.io.File
 import java.time.LocalDateTime
 
-class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private val dataProcessor:DataProcess) : ViewModel() {
+class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private val dataProcessor: DataProcess) : ViewModel() {
 
     private val _snackbarHostState = MutableStateFlow(SnackbarHostState())
     val SnackbarHostState:StateFlow<SnackbarHostState> = _snackbarHostState.asStateFlow()

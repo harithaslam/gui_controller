@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -32,34 +33,35 @@ fun OpenDialogButton(action: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 5.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)) {
-        Text(text = "Reset Database",color = Color.White)
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+    ) {
+        Text(text = "Reset Database", color = Color.White)
     }
 
     // Dialog
-        AnimatedVisibility(
-            visible = openDialog.value,
-            enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 }),
-            exit = fadeOut() + slideOutVertically(targetOffsetY = { it / 2 })
-        ) {
-            AlertDialog(
-                onDismissRequest = { openDialog.value = false },
-                title = { Text(text = "Reset Database") },
-                text = { Text("This action will cause the database to be erased. Are you sure?") },
-                confirmButton = {
-                    Button(onClick = {
+    if (openDialog.value)
+        AlertDialog(
+            onDismissRequest = { openDialog.value = false },
+            title = { Text(text = "Reset Database", style = MaterialTheme.typography.h4) },
+            text = { Text("This action will cause the database to be erased. Are you sure?") },
+            confirmButton = {
+                Button(
+                    onClick = {
                         openDialog.value = false
                         action()
-                    }) {
-                        Text("OK")
-                    }
-                },
-                dismissButton = {
-                    Button(onClick = { openDialog.value = false }) {
-                        Text("Cancel")
-                    }
+                    }, shape = RoundedCornerShape(25.dp)
+                ) {
+                    Text("OK")
                 }
-            )
-        }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { openDialog.value = false }, shape = RoundedCornerShape(25.dp)
+                ) {
+                    Text("Cancel")
+                }
+            }
+        )
+
 
 }

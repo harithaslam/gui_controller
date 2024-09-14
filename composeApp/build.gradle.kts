@@ -31,6 +31,7 @@ kotlin {
             implementation("org.apache.poi:poi-ooxml:5.2.3")
             implementation("app.cash.sqldelight:sqlite-driver:2.0.0")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:latest.release")
+            implementation("io.github.koalaplot:koalaplot-core:0.6.3")
         }
         desktopMain.dependencies {
             implementation("app.cash.sqldelight:sqlite-driver:2.0.0")
