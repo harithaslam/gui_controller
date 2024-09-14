@@ -238,7 +238,7 @@ class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private 
         }
     }
 
-    val dbMutex = Mutex()
+    private val dbMutex = Mutex()
 
     private fun handleReceivedData(data: String): ArduinoSensorData {
         val dateTimeNow = LocalDateTime.now()
