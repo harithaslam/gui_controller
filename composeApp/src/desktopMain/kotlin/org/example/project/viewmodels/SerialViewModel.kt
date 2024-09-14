@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import org.example.project.ArduinoSensorData
@@ -236,6 +238,7 @@ class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private 
         }
     }
 
+    val dbMutex = Mutex()
 
     private fun handleReceivedData(data: String): ArduinoSensorData {
         val dateTimeNow = LocalDateTime.now()
@@ -244,6 +247,8 @@ class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private 
         if (validateJson(data)) {
             val arduinoSensorData = formatter.decodeFromString<ArduinoSensorData>(data)
             CoroutineScope(Dispatchers.IO).launch {
+                dbMutex.withLock {
+
                 sensorDataQueries.insertSensorData(
                     roll_IMU1 = arduinoSensorData.roll_IMU1,
                     pitch_IMU1 = arduinoSensorData.pitch_IMU1,
@@ -264,6 +269,7 @@ class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private 
                     date = MalaysianTimeFormatter.getDateForFile(),
                     time =MalaysianTimeFormatter.getTimeForFile()
                 )
+            }
             }
             return arduinoSensorData
         } else {
