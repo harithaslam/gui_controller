@@ -17,14 +17,10 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import java.time.LocalDateTime
 
-class SerialViewModel(
-    private val sensorDataQueries: SensorDataQueries,
-    private val dataProcessor: DataProcess
-) : ViewModel() {
+class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private val dataProcessor:DataProcess) : ViewModel() {
 
     private val _snackbarHostState = MutableStateFlow(SnackbarHostState())
-    val SnackbarHostState: StateFlow<SnackbarHostState> = _snackbarHostState.asStateFlow()
-
+    val SnackbarHostState:StateFlow<SnackbarHostState> = _snackbarHostState.asStateFlow()
     // Holds the state of the SerialPort connection (connected/disconnected)
     private val _isSerialPortConnected = MutableStateFlow(false)
     val isSerialPortConnected: StateFlow<Boolean> = _isSerialPortConnected.asStateFlow()
@@ -43,7 +39,7 @@ class SerialViewModel(
     // Holds the reference to the SerialPort
     private var serialPort: SerialPort? = null
 
-    suspend fun showMessage(message: String, actionName: String? = null, action: () -> Unit = {}) {
+    suspend fun showMessage(message:String,actionName:String? = null,action:()->Unit = {}){
         _snackbarHostState.value.showSnackbar(message)
     }
 
@@ -121,22 +117,57 @@ class SerialViewModel(
         }
     }
 
-    fun exportToExcel() {
+    fun exportToExcel(){
         disconnectSerialPort()
         setMachineState(false)
         CoroutineScope(Dispatchers.Default).launch {
             dataProcessor.exportSensorDataToExcel("data")
         }
     }
-
-    fun resetDatabase() {
+    fun resetDatabase(){
         disconnectSerialPort()
         setMachineState(false)
         CoroutineScope(Dispatchers.Default).launch {
             sensorDataQueries.clearSensorData()
         }
     }
+//    private fun startReadingSerialData() {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val stringBuilder = StringBuilder()
+//            while (serialPort?.isOpen == true) {
+//                val inputStream = serialPort?.inputStream ?: continue
+//                val buffer = ByteArray(4096 )
+//                val bytesRead = inputStream.read(buffer)
+//                if (bytesRead > 0) {
+//                    val receivedData = String(buffer, 0, bytesRead)
+//                    stringBuilder.append(receivedData)
+//
+//                    // Check if the accumulated data contains a full JSON object
+//                    val jsonData = stringBuilder.toString()
+//                    if (jsonData.startsWith("{") && jsonData.endsWith("}\r\n")) {
+//                        _serialData.value = jsonData
+//                        stringBuilder.clear()
+//                    }
+//                }
+//            }
+//        }
+//    }
 
+
+    //    private fun startReadingSerialData() {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            while (serialPort?.isOpen == true) {
+//                val inputStream = serialPort?.inputStream ?: continue
+//                val buffer = ByteArray(4096)
+//                val bytesRead = inputStream.read(buffer)
+//                if (bytesRead > 0) {
+//                    val receivedData = String(buffer, 0, bytesRead)
+//                    _serialData.value = receivedData
+//                    println(receivedData)
+//                }
+//            }
+//        }
+//    }
     private fun startReadingSerialData() {
         viewModelScope.launch(Dispatchers.IO) {
             val buffer = StringBuilder()
@@ -157,45 +188,31 @@ class SerialViewModel(
                         val data = handleReceivedData(completeLine.trim())
                         // Post the complete line to LiveData
                         _serialData.value = """
-                                    Roll IMU1: ${data.roll_IMU1}
-                                    Pitch IMU1: ${data.pitch_IMU1}
-                                    Roll IMU2: ${data.roll_IMU2}
-                                    Pitch IMU2: ${data.pitch_IMU2}
-                                    RS775 Speed: ${data.rs775_speed}
-                                    SPG Speed: ${data.spg_speed}
-                                    RS775 Motor Voltage: ${data.rs775_motor_voltage}
-                                    RS775 Current: ${data.rs775_current}
-                                    RS775 Position: ${data.rs775_position}
-                                    SPG Voltage: ${data.spg_voltage}
-                                    SPG Current: ${data.spg_current}
-                                    SPG Position: ${data.spg_position}
-                                    Brake Status: ${data.brake_status}
-                                    PID Proportional: ${data.PID_proportional}
-                                    PID Integral: ${data.PID_integral}
-                                    PID Derivative: ${data.PID_derivative}
-                                """.trimIndent()
-
+                                            Roll IMU1: ${data.roll_IMU1}
+                                            Pitch IMU1: ${data.pitch_IMU1}
+                                            Roll IMU2: ${data.roll_IMU2}
+                                            Pitch IMU2: ${data.pitch_IMU2}
+                                            RS775 Speed: ${data.rs775_speed}
+                                            SPG Speed: ${data.spg_speed}
+                                            RS775 Motor Voltage: ${data.rs775_motor_voltage}
+                                            RS775 Current: ${data.rs775_current}
+                                            SPG Voltage: ${data.spg_voltage}
+                                            SPG Current: ${data.spg_current}
+                                            """.trimIndent()
                         println(
                             """
-                        Roll IMU1: ${data.roll_IMU1}
-                        Pitch IMU1: ${data.pitch_IMU1}
-                        Roll IMU2: ${data.roll_IMU2}
-                        Pitch IMU2: ${data.pitch_IMU2}
-                        RS775 Speed: ${data.rs775_speed}
-                        SPG Speed: ${data.spg_speed}
-                        RS775 Motor Voltage: ${data.rs775_motor_voltage}
-                        RS775 Current: ${data.rs775_current}
-                        RS775 Position: ${data.rs775_position}
-                        SPG Voltage: ${data.spg_voltage}
-                        SPG Current: ${data.spg_current}
-                        SPG Position: ${data.spg_position}
-                        Brake Status: ${data.brake_status}
-                        PID Proportional: ${data.PID_proportional}
-                        PID Integral: ${data.PID_integral}
-                        PID Derivative: ${data.PID_derivative}
-    """.trimIndent()
+                                Roll IMU1: ${data.roll_IMU1}
+                                Pitch IMU1: ${data.pitch_IMU1}
+                                Roll IMU2: ${data.roll_IMU2}
+                                Pitch IMU2: ${data.pitch_IMU2}
+                                RS775 Speed: ${data.rs775_speed}
+                                SPG Speed: ${data.spg_speed}
+                                RS775 Motor Voltage: ${data.rs775_motor_voltage}
+                                RS775 Current: ${data.rs775_current}
+                                SPG Voltage: ${data.spg_voltage}
+                                SPG Current: ${data.spg_current}
+                            """.trimIndent()
                         )
-
 
                         // Remove the processed line from the buffer
                         buffer.delete(0, newlineIndex + 1)
@@ -211,7 +228,7 @@ class SerialViewModel(
 
     private fun handleReceivedData(data: String): ArduinoSensorData {
         val dateTimeNow = LocalDateTime.now()
-        val formatter = Json { ignoreUnknownKeys = true }
+        val formatter = Json{ignoreUnknownKeys=true}
 
         if (validateJson(data)) {
             val arduinoSensorData = formatter.decodeFromString<ArduinoSensorData>(data)
@@ -222,10 +239,10 @@ class SerialViewModel(
                     roll_IMU2 = arduinoSensorData.roll_IMU2,
                     pitch_IMU2 = arduinoSensorData.pitch_IMU2,
                     rs775_speed = arduinoSensorData.rs775_speed,
+                    rs775_position = arduinoSensorData.rs775_position,
                     spg_speed = arduinoSensorData.spg_speed,
                     rs775_motor_voltage = arduinoSensorData.rs775_motor_voltage,
                     rs775_current = arduinoSensorData.rs775_current,
-                    rs775_position = arduinoSensorData.rs775_position,
                     spg_current = arduinoSensorData.spg_current,
                     spg_voltage = arduinoSensorData.spg_voltage,
                     spg_position = arduinoSensorData.spg_position,
@@ -234,7 +251,7 @@ class SerialViewModel(
                     PID_integral = arduinoSensorData.PID_integral,
                     PID_derivative = arduinoSensorData.PID_derivative,
                     date = MalaysianTimeFormatter.getDateForFile(),
-                    time = MalaysianTimeFormatter.getTimeForFile()
+                    time =MalaysianTimeFormatter.getTimeForFile()
                 )
             }
             return arduinoSensorData
@@ -250,15 +267,16 @@ class SerialViewModel(
             spg_speed = 0.0,
             rs775_motor_voltage = 0.0,
             rs775_current = 0.0,
-            rs775_position = 0.0,
             spg_voltage = 0.0,
             spg_current = 0.0,
+            rs775_position = 0.0,
             spg_position = 0.0,
             brake_status = 0,
-            PID_proportional = 0.0,
-            PID_integral = 0.0,
-            PID_derivative = 0.0,
-        )
+            PID_proportional =0.0,
+            PID_integral =0.0,
+            PID_derivative =0.0,
+
+            )
     }
 
     private fun validateJson(data: String): Boolean {
@@ -273,14 +291,8 @@ class SerialViewModel(
                 "spg_speed",
                 "rs775_motor_voltage",
                 "rs775_current",
-                "rs775_position",
                 "spg_voltage",
-                "spg_current",
-                "spg_position",
-                "brake_status",
-                "PID_propotional",
-                "PID_integral",
-                "PID_derivative"
+                "spg_current"
             )
             val jsonKeys = jsonData.jsonObject.keys
             return requiredKeys.all { it in jsonKeys }

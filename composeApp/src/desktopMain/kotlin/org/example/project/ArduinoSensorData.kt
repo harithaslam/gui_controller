@@ -16,7 +16,7 @@ data class ArduinoSensorData(
     val spg_voltage: Double?,
     val spg_current: Double?,
      val spg_position : Double?,
-     val brake_status : Int?,
+     val brake_status : Long?,
      val PID_proportional:Double?,
      val PID_integral:Double?,
      val PID_derivative:Double?,

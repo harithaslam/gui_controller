@@ -21,10 +21,8 @@ class DataProcess(private val sensorDataQueries: SensorDataQueries) {
         val headerRow = sheet.createRow(0)
         val headers = arrayOf(
             "roll_IMU1", "pitch_IMU1", "roll_IMU2", "pitch_IMU2",
-            "rs775_speed", "spg_speed", "rs775_motor_voltage",
-            "rs775_current","rs775_position", "spg_voltage",
-            "spg_current",
-            "spg_position",
+            "rs775_position", "rs775_speed", "rs775_motor_voltage", "rs775_current",
+            "spg_position", "spg_speed", "spg_voltage", "spg_current",
             "brake_status",
             "PID_propotional",
             "PID_integral",
@@ -44,15 +42,15 @@ class DataProcess(private val sensorDataQueries: SensorDataQueries) {
             row.createCell(1).setCellValue(sensorData.pitch_IMU1 ?: 0.0)
             row.createCell(2).setCellValue(sensorData.roll_IMU2 ?: 0.0)
             row.createCell(3).setCellValue(sensorData.pitch_IMU2 ?: 0.0)
-            row.createCell(4).setCellValue(sensorData.rs775_speed ?: 0.0)
-            row.createCell(5).setCellValue(sensorData.spg_speed ?: 0.0)
+            row.createCell(4).setCellValue(sensorData.rs775_position ?: 0.0)
+            row.createCell(5).setCellValue(sensorData.rs775_speed ?: 0.0)
             row.createCell(6).setCellValue(sensorData.rs775_motor_voltage ?: 0.0)
             row.createCell(7).setCellValue(sensorData.rs775_current ?: 0.0)
-            row.createCell(8).setCellValue(sensorData.rs775_position ?: 0.0)
-            row.createCell(9).setCellValue(sensorData.spg_voltage ?: 0.0)
-            row.createCell(10).setCellValue(sensorData.spg_current ?: 0.0)
-            row.createCell(11).setCellValue(sensorData.spg_position ?: 0.0)
-            row.createCell(12).setCellValue(sensorData.brake_status ?: 0
+            row.createCell(8).setCellValue(sensorData.spg_position ?: 0.0)
+            row.createCell(9).setCellValue(sensorData.spg_speed ?: 0.0)
+            row.createCell(10).setCellValue(sensorData.spg_voltage ?: 0.0)
+            row.createCell(11).setCellValue(sensorData.spg_current ?: 0.0)
+            row.createCell(12).setCellValue(sensorData.brake_status.toString() )
             row.createCell(13).setCellValue(sensorData.PID_proportional ?: 0.0)
             row.createCell(14).setCellValue(sensorData.PID_integral ?: 0.0)
             row.createCell(15).setCellValue(sensorData.PID_derivative ?: 0.0)
@@ -85,7 +83,7 @@ class DataProcess(private val sensorDataQueries: SensorDataQueries) {
         spg_voltage: Double?,
         spg_current: Double?,
         spg_position: Double?,
-        brake_status: Boolean?,
+        brake_status: Long?,
         PID_proportional: Double?,
         PID_integral: Double?,
         PID_derivative: Double?,
@@ -93,7 +91,6 @@ class DataProcess(private val sensorDataQueries: SensorDataQueries) {
         time: String?
     ): ArduinoSensorData {
         return ArduinoSensorData(
-            id = id,
             roll_IMU1 = roll_IMU1,
             pitch_IMU1 = pitch_IMU1,
             roll_IMU2 = roll_IMU2,

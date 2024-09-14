@@ -11,7 +11,9 @@ import org.koin.dsl.module
 val desktopModules : Module = module {
     single{
         // Create the SQLite driver
-        val driver = JdbcSqliteDriver("jdbc:sqlite:sensorData.db")
+        val driver = JdbcSqliteDriver("jdbc:sqlite:sensorData.db").apply {
+            execute(null, "PRAGMA busy_timeout = 30000", 0) // Set timeout to 30 seconds
+        }
 
         // Initialize the database schema if it doesn't exist
         Database.Schema.create(driver)
