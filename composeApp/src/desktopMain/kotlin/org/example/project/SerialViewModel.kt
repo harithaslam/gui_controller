@@ -3,18 +3,22 @@ package org.example.project
 import MalaysianTimeFormatter
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.project.cache.SensorDataQueries
 import com.fazecast.jSerialComm.SerialPort
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
+import java.awt.Desktop
+import java.io.File
 import java.time.LocalDateTime
 
 class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private val dataProcessor:DataProcess) : ViewModel() {
@@ -40,7 +44,11 @@ class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private 
     private var serialPort: SerialPort? = null
 
     suspend fun showMessage(message:String,actionName:String? = null,action:()->Unit = {}){
-        _snackbarHostState.value.showSnackbar(message)
+        var result = _snackbarHostState.value.showSnackbar(message,actionName ?: "")
+        when (result) {
+            SnackbarResult.ActionPerformed -> action()
+            SnackbarResult.Dismissed -> { /* Handle dismissed state if needed */ }
+        }
     }
 
     // Function to list available COM ports
@@ -117,17 +125,19 @@ class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private 
         }
     }
 
-    fun exportToExcel(){
+    suspend fun exportToExcel(): String {
         disconnectSerialPort()
         setMachineState(false)
-        CoroutineScope(Dispatchers.Default).launch {
-            dataProcessor.exportSensorDataToExcel("data")
+        val res = CoroutineScope(Dispatchers.Default).async {
+            val fileName = dataProcessor.exportSensorDataToExcel("data")
+            return@async fileName;
         }
+        return res.await()
     }
-    fun resetDatabase(){
+    suspend fun resetDatabase(){
         disconnectSerialPort()
         setMachineState(false)
-        CoroutineScope(Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             sensorDataQueries.clearSensorData()
         }
     }
@@ -302,8 +312,22 @@ class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private 
 
     }
 
-    fun viewExcelFile() {
-
+    fun viewExcelFile(fileName:String) {
+        val file = File(fileName)
+        if (file.exists()) {
+            if (Desktop.isDesktopSupported()) {
+                val desktop = Desktop.getDesktop()
+                if (desktop.isSupported(Desktop.Action.OPEN)) {
+                    desktop.open(file)
+                } else {
+                    println("OPEN action is not supported on this platform.")
+                }
+            } else {
+                println("Desktop is not supported on this platform.")
+            }
+        } else {
+            println("File does not exist: $fileName")
+        }
     }
 
 }

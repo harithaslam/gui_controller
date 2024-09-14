@@ -12,7 +12,8 @@ import java.util.Date
 class DataProcess(private val sensorDataQueries: SensorDataQueries) {
 
 
-    suspend fun exportSensorDataToExcel(filePath: String) {
+    suspend fun exportSensorDataToExcel(filePath: String): String {
+        val fileName = "${filePath}_${MalaysianTimeFormatter.getCurrentMalaysianTimeForFile()}.xlsx"
         // Create a new workbook and sheet
         val workbook = XSSFWorkbook()
         val sheet = workbook.createSheet("ArduinoSensorData")
@@ -60,13 +61,14 @@ class DataProcess(private val sensorDataQueries: SensorDataQueries) {
 
         // Write the workbook to a file
         withContext(Dispatchers.IO) {
-            FileOutputStream("${filePath}_${MalaysianTimeFormatter.getCurrentMalaysianTimeForFile()}.xlsx").use { fileOut ->
+            FileOutputStream(fileName).use { fileOut ->
                 workbook.write(fileOut)
             }
         }
 
         // Close the workbook
         workbook.close()
+        return fileName;
     }
 
     fun mapToSensorData(

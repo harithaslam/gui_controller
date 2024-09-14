@@ -1,5 +1,6 @@
 package org.example.project
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -35,6 +36,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import org.koin.mp.KoinPlatform.getKoin
 
 
@@ -44,59 +46,70 @@ fun App(viewModel: SerialViewModel =viewModel { SerialViewModel(sensorDataQuerie
     val serialData by viewModel.serialData.collectAsState()
     val snackbarHostState by viewModel.SnackbarHostState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = {
-            TopAppBar(
+    AppTheme {
+        Scaffold(
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+            topBar = {
+                TopAppBar(
 
-                contentColor = Color.White,
-                backgroundColor = MaterialTheme.colors.primary ,
-                title = {
-                    Text("GUI Controller")
-                }
-            )
-        }
-    ) {
-    Row {
-        Column(
-            modifier = Modifier.padding(10.dp).weight(0.5f)
-
-        ){
-            COMPortSetting()
-            Spacer(
-                modifier = Modifier.height(10.dp)
-            )
-            Interrupt()
-            Spacer(
-                modifier = Modifier.height(10.dp)
-            )
-            DataProcessing(onExportToExcel = { viewModel.exportToExcel()
-                coroutineScope.launch {
-                    viewModel.showMessage("Data has been exported to Excel", "VIEW"){
-                        viewModel.viewExcelFile()
+                    contentColor = Color.White,
+                    backgroundColor = MaterialTheme.colors.primary,
+                    title = {
+                        Text("GUI Controller")
                     }
-                }
-                                             }, onResetDatabase = {viewModel.resetDatabase()})
-
-        }
-        Column(
-            modifier = Modifier.padding(10.dp).weight(0.5f)
-
+                )
+            }
         ) {
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column (
-                    modifier = Modifier.padding(10.dp)
-                ){
-                    Text(serialData?:"DATA IS EMPTY")
-                    Spacer(modifier = Modifier.height(25.dp))
+            Row {
+                Column(
+                    modifier = Modifier.padding(10.dp).weight(0.5f)
 
+                ) {
+                    COMPortSetting()
+                    Spacer(
+                        modifier = Modifier.height(10.dp)
+                    )
+                    Interrupt()
+                    Spacer(
+                        modifier = Modifier.height(10.dp)
+                    )
+                    DataProcessing(onExportToExcel = {
+                        coroutineScope.launch {
+                            val fileName = viewModel.exportToExcel()
+                            viewModel.showMessage("Data has been exported to Excel", "VIEW") {
+                                viewModel.viewExcelFile(fileName)
+                            }
+                        }
+                    }, onResetDatabase = {
+                        coroutineScope.launch {
+                            viewModel.resetDatabase()
+                            delay(500)
+                            viewModel.showMessage("Database Erased")
+                        }
+
+                    })
+
+                }
+                Column(
+                    modifier = Modifier.padding(10.dp).weight(0.5f)
+
+                ) {
+                    Card(
+                        elevation = 3.dp,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(10.dp)
+                        ) {
+                            Text(serialData ?: "DATA IS EMPTY")
+                            Spacer(modifier = Modifier.height(25.dp))
+
+                        }
+                    }
                 }
             }
         }
     }
-}
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
@@ -115,7 +128,10 @@ fun COMPortSetting(viewModel: SerialViewModel =viewModel { SerialViewModel(getKo
             modifier = Modifier.padding(10.dp)
         ) {
 
-
+            Text("Serial Connection Settings",
+                style = MaterialTheme.typography.h5
+            )
+            Spacer(Modifier.height(10.dp))
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = {
@@ -243,6 +259,7 @@ fun Interrupt(viewModel: SerialViewModel =viewModel { SerialViewModel(getKoin().
 
                 }
             )
+
             Button(
                 shape = RoundedCornerShape(25.dp),
                         onClick = {
@@ -270,8 +287,11 @@ fun DataProcessing(
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text("Data Processing",
+                style = MaterialTheme.typography.h5
+            )
+            Spacer(Modifier.height(10.dp))
             // Export to Excel Button
             Button(
                 shape = RoundedCornerShape(25.dp),
@@ -281,21 +301,25 @@ fun DataProcessing(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 5.dp)
+
             ) {
                 Text("Export to Excel")
             }
 
             // Reset Database Button
-            Button(
-                shape = RoundedCornerShape(25.dp),
-                onClick = onResetDatabase,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
-            ) {
-                Text("Reset Database", color = Color.White)
+            OpenDialogButton {
+                onResetDatabase()
             }
+//            Button(
+//                shape = RoundedCornerShape(25.dp),
+//                onClick = onResetDatabase,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(vertical = 5.dp),
+//                colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
+//            ) {
+//                Text("Reset Database", color = Color.White)
+//            }
         }
     }
 }
