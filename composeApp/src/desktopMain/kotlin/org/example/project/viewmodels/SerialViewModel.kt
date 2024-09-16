@@ -197,8 +197,8 @@ class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private 
                     while (newlineIndex != -1) {
                         // Extract the line up to the newline
                         val completeLine = buffer.substring(0, newlineIndex).trimEnd()
-
-                        val data = handleReceivedData(completeLine.trim())
+                        val trimmedString = completeLine.substring(completeLine.indexOf("{"))
+                        val data = handleReceivedData(trimmedString.trim())
                         // Post the complete line to LiveData
                         _serialData.value = """
                                             Roll IMU1: ${data.roll_IMU1}
