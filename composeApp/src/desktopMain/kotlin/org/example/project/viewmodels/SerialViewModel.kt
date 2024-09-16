@@ -197,7 +197,7 @@ class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private 
                     while (newlineIndex != -1) {
                         // Extract the line up to the newline
                         val completeLine = buffer.substring(0, newlineIndex).trimEnd()
-                        val trimmedString = completeLine.substring(completeLine.indexOf("{"))
+                        val trimmedString = trimForJson(completeLine)
                         val data = handleReceivedData(trimmedString.trim())
                         // Post the complete line to LiveData
                         _serialData.value = """
@@ -237,7 +237,13 @@ class SerialViewModel(private val sensorDataQueries: SensorDataQueries, private 
             }
         }
     }
-
+    private fun trimForJson(substring:String): String {
+        return try {
+            substring.substring(substring.indexOf("{"))
+        } catch (e:Exception){
+            ""
+        }
+    }
     private val dbMutex = Mutex()
 
     private fun handleReceivedData(data: String): ArduinoSensorData {
